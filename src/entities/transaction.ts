@@ -6,22 +6,22 @@ import {Review} from "./review";
 
 @Entity()
 export class Transaction {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    date: Date;
+  @Column({default: new Date()})
+  date: Date;
 
-    @Column()
-    sum: number;
+  @Column()
+  amount: number;
 
-    @ManyToOne(type => Waiter)
-    waiter: Waiter;
+  @ManyToOne(type => Waiter, {nullable: false})
+  waiter: Waiter;
 
-    @ManyToOne(type => Guest)
-    guest: Guest;
+  @ManyToOne(type => Guest, {nullable: true})
+  guest: Guest;
 
-    @OneToOne(type => Review)
-    @JoinColumn()
-    review: Review;
+  @OneToOne(type => Review, {nullable: false, cascade: true})
+  @JoinColumn()
+  review: Review;
 }

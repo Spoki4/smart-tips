@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  backend:
+    image: 'node:8.11.2-alpine'
+    working_dir: '/backend'
+    command: npm run dev
+    volumes:
+      - './:/backend'
+    ports:
+      - '3000:80'
+    environment:
+      DATABASE_URI: "postgresql://postgres:test@postgres:5432/smart-tips"
+      PORT: 80
+      NODE_ENV: 'development'
+      JWT_SECRET: '123123qwerty'
+      TOKEN_EXPIRES: '1d'
+    depends_on:
+      - postgres
+  postgres:
+    image: 'postgres:10.4-alpine'
+    environment:
+      POSTGRES_DB: "smart-tips"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "test"
+    ports:
+      - '5432:5432'

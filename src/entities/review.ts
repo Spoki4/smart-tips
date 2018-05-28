@@ -1,13 +1,17 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Transaction} from "./transaction";
 
 @Entity()
 export class Review {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    rating: number;
+  @Column({type: "real"})
+  rating: number;
 
-    @Column()
-    text: string;
+  @Column()
+  comment: string;
+
+  @OneToOne(type => Transaction, transaction => transaction.review)
+  transaction: Transaction;
 }
