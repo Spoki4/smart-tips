@@ -13,9 +13,9 @@ export class Waiter {
   @Column()
   surname: string;
 
-  @ManyToOne(type => Cafe, cafe => cafe.waiters)
+  @ManyToOne(type => Cafe, cafe => cafe.waiters, {onDelete: "CASCADE"})
   cafe: Cafe;
 
-  @OneToMany(type => Transaction, transaction => transaction.waiter)
+  @OneToMany(type => Transaction, transaction => transaction.waiter, {cascade: ["remove"]})
   transactions: Transaction[];
 }

@@ -18,6 +18,7 @@ useContainer(Container);
  * if you can use a SSL, check this method {@link routing-controllers/useExpressServer }
  */
 createExpressServer({
+  cors: true,
   controllers: [
     AuthorizationController,
     CafesController,

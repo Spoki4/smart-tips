@@ -8,7 +8,6 @@ export class Guest {
   id: number;
 
   @Column()
-  @Length(2, 64, {message: ((value, min, max) => `Имя должно быть длинее ${min} и короче ${max}`)})
   name: string;
 
   @Column({nullable: true})

@@ -15,13 +15,13 @@ export class Transaction {
   @Column()
   amount: number;
 
-  @ManyToOne(type => Waiter, {nullable: false})
+  @ManyToOne(type => Waiter, {nullable: false, onDelete: "CASCADE"})
   waiter: Waiter;
 
   @ManyToOne(type => Guest, {nullable: true})
   guest: Guest;
 
-  @OneToOne(type => Review, {nullable: false, cascade: true})
+  @OneToOne(type => Review, {nullable: false, cascade: ["insert", "update", "remove"], onDelete: "CASCADE"})
   @JoinColumn()
   review: Review;
 }
