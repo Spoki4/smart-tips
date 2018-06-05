@@ -79,7 +79,11 @@ export class TransactionsController {
   @Authorized()
   @Put("/transactions/:id")
   async update(@Param("id") id: number, @Body() transaction: Transaction) {
-    const existedTransaction = await this.repository.findOne(id)
+    const existedTransaction = await this.repository.findOne({
+      where: {id},
+      relations: ["review"]
+    });
+
     if(!existedTransaction) {
       throw new NotFoundError(`Transaction with id ${id} not found`)
     }
@@ -104,7 +108,16 @@ export class TransactionsController {
       throw new NotFoundError(`Waiter with id ${transaction.waiter} not found`);
     }
 
-    return this.repository.save({...existedTransaction, ...transaction, id: existedTransaction.id});
+    return this.repository.save({
+      ...existedTransaction,
+      ...transaction,
+      id: existedTransaction.id,
+      review: {
+        ...existedTransaction.review,
+        ...transaction.review,
+        id: existedTransaction.review.id
+      }
+    });
   }
 
   @Authorized()
