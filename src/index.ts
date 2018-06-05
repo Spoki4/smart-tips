@@ -11,7 +11,7 @@ import {checkValidToken} from "./services/authorization";
 import {AuthorizationController} from "./controllers/authorization";
 
 // Init database connection
-new Database(process.env.DATABASE_URI);
+new Database(process.env.DATABASE_URL);
 
 useContainer(Container);
 /**

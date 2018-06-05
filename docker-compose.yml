@@ -10,7 +10,7 @@ services:
     ports:
       - '3000:80'
     environment:
-      DATABASE_URI: "postgresql://postgres:test@postgres:5432/smart-tips"
+      DATABASE_URL: "postgresql://postgres:test@postgres:5432/smart-tips"
       PORT: 80
       NODE_ENV: 'development'
       JWT_SECRET: '123123qwerty'
