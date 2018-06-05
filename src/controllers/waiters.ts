@@ -35,8 +35,13 @@ export class WaitersController {
 
   @Authorized()
   @Get("/waiters/:id")
-  getOne(@Param("id") id: number) {
-    return this.repository.findOne(id)
+  async getOne(@Param("id") id: number) {
+    const waiter = await this.repository.findOne(id);
+
+    if(!waiter)
+      throw new NotFoundError(`Официант с id: ${id} не найден`);
+
+    return waiter
   }
 
   @Authorized()
