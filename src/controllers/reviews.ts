@@ -1,4 +1,15 @@
-import {Body, Delete, Get, JsonController, Param, Post, Put, QueryParam, Authorized} from "routing-controllers";
+import {
+  Body,
+  Delete,
+  Get,
+  JsonController,
+  Param,
+  Post,
+  Put,
+  QueryParam,
+  Authorized,
+  NotFoundError
+} from "routing-controllers";
 import {InjectRepository} from "typeorm-typedi-extensions";
 import {Repository} from "typeorm";
 import {Review} from "../entities/review";
@@ -38,13 +49,20 @@ export class ReviewsController {
 
   @Authorized()
   @Put("/reviews/:id")
-  update(@Param("id") id: number, @Body() review: Review) {
-    return this.repository.update(id, review);
+  async update(@Param("id") id: number, @Body() review: Review) {
+    const existedReview = await this.repository.findOne(id);
+    if (!existedReview)
+      throw new NotFoundError(`Отзыв с id: ${id} не найден`);
+
+    return this.repository.save({...existedReview, ...review, id: id});
   }
 
   @Authorized()
   @Delete("/reviews/:id")
-  remove(@Param("id") id: number) {
-    return this.repository.delete(id);
+  async remove(@Param("id") id: number) {
+    const existedReview = await this.repository.findOne(id);
+    if (!existedReview)
+      throw new NotFoundError(`Отзыв с id: ${id} не найден`);
+    return this.repository.remove(existedReview);
   }
 }

@@ -31,7 +31,7 @@ export class CafesController {
       .createQueryBuilder("cafe")
       .leftJoin("cafe.waiters", "waiter")
       .leftJoin(Transaction, "transaction", "transaction.waiter = waiter.id")
-      .leftJoin(Review, "review", "review.id = transaction.id")
+      .leftJoin(Review, "review", "review.id = transaction.review")
       .select(["cafe.id as id", "cafe.name as name", "cafe.address as address", "cafe.description as description"])
       .addSelect("AVG(review.rating)", "rating")
       .groupBy("cafe.id")
@@ -45,7 +45,7 @@ export class CafesController {
       .createQueryBuilder("cafe")
       .leftJoin("cafe.waiters", "waiter")
       .leftJoin(Transaction, "transaction", "transaction.waiter = waiter.id")
-      .leftJoin(Review, "review", "review.id = transaction.id")
+      .leftJoin(Review, "review", "review.id = transaction.review")
       .select(["cafe.id as id", "cafe.name as name", "cafe.address as address", "cafe.description as description"])
       .addSelect("AVG(review.rating)", "rating")
       .andWhere("cafe.id = :id")
@@ -66,8 +66,8 @@ export class CafesController {
 
   @Authorized()
   @Put("/cafes/:id")
-  update(@Param("id") id: number, @Body() cafe: Cafe) {
-    const existedCafe = this.repository.findOne(id);
+  async update(@Param("id") id: number, @Body() cafe: Cafe) {
+    const existedCafe = await  this.repository.findOne(id);
     if (!existedCafe)
       throw new NotFoundError(`Ресторан с id: ${id} не найден`);
 
@@ -78,6 +78,9 @@ export class CafesController {
   @Delete("/cafes/:id")
   async remove(@Param("id") id: number) {
     const cafe = await this.repository.findOne(id);
+
+    if(!cafe)
+      throw new NotFoundError(`Ресторан с id: ${id} не найден`);
 
     return this.repository.remove(cafe);
   }

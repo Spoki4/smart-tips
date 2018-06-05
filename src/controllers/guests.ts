@@ -1,4 +1,4 @@
-import {Authorized, Body, Delete, Get, JsonController, Param, Post, Put} from "routing-controllers";
+import {Authorized, Body, Delete, Get, JsonController, NotFoundError, Param, Post, Put} from "routing-controllers";
 import {InjectRepository} from "typeorm-typedi-extensions";
 import {Guest} from "../entities/guest";
 import {Repository} from "typeorm";
@@ -29,13 +29,22 @@ export class GuestsController {
 
   @Authorized()
   @Put("/guests/:id")
-  update(@Param("id") id: number, @Body() guest: Guest) {
-    return this.repository.update(id, guest);
+  async update(@Param("id") id: number, @Body() guest: Guest) {
+    const existedGuest = await this.repository.findOne(id);
+    if (!existedGuest)
+      throw new NotFoundError(`Гость с id: ${id} не найден`);
+
+    return this.repository.save({...existedGuest, ...guest, id: id});
   }
 
   @Authorized()
   @Delete("/guests/:id")
-  remove(@Param("id") id: number) {
-    return this.repository.delete(id);
+  async remove(@Param("id") id: number) {
+    const guest = await this.repository.findOne(id);
+
+    if(!guest)
+      throw new NotFoundError(`Гость с id: ${id} не найден`);
+
+    return this.repository.remove(guest);
   }
 }
