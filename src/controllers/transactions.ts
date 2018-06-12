@@ -36,8 +36,15 @@ export class TransactionsController {
     @QueryParam("waiterId") waiterId: number,
     @QueryParam("guestId") guestId: number
   ) {
-    if (cafeId)
-      return this.repository.find({where: {cafe: cafeId}, relations: ["review"]});
+    if (cafeId) {
+      return this.repository
+        .createQueryBuilder("transaction")
+        .leftJoin("transaction.waiter", "waiter")
+        .leftJoinAndSelect("transaction.review", "review")
+        .where("waiter.cafe = :cafeId")
+        .setParameters({ cafeId })
+        .getMany()
+    }
     else if (waiterId)
       return this.repository.find({where: {waiter: waiterId}, relations: ["review"]});
     else if (guestId)
