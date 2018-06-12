@@ -67,10 +67,6 @@ export class WaitersController {
     if (!existedWaiter)
       throw new NotFoundError(`Официант с id: ${id} не найден`);
 
-    if (typeof waiter.cafe !== "number") {
-      throw new BadRequestError("Cafe must be a id number")
-    }
-
     const existedCafe = await this.cafeRepository.findOne(waiter.cafe);
 
     if(!existedCafe) {
